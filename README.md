@@ -1,9 +1,9 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/GxFB-nwe)
 
-# Asignación: [Nombre de la asignación]
+# Asignación: Programación dinámica y voraz
 
-**Fecha:** [DD/MM/AAAA]
-**Curso:** [Nombre del Curso]
+**Fecha:** [01/10/2025]
+**Curso:** Analisis y Diseño de Algoritmos
 
 ---
 
@@ -11,12 +11,11 @@
 
 | Nombre Completo       | Código  | Rol            | Correo Electrónico       |
 |-----------------------|---------|----------------|--------------------------|
-| [Estudiante 1]        | 123456  | [Líder/Colab.] | [correo1@institucion.edu]|
-| [Estudiante 2]        | 123457  | [Colaborador]  | [correo2@institucion.edu]|
-| [Estudiante 3]        | 123458  | [Colaborador]  | [correo3@institucion.edu]|
+|Santiago Useche Tascon | 2266200 | [Líder/Colab.] | [santiago.useche@correounivalle.edu.co]|
+|Karol Burbano Nasner   | 2359305 | [Colaborador]  | [karol.burbano@correounivalle.edu]|
+|Sebastian Castro Rengifo| 2359435 | [Colaborador] | [sebastian.castro.rengifo@correounivalle.edu.co]|
 
 ---
 
 ## 📌 Descripción del Taller
-[Breve párrafo explicando el propósito y objetivos del taller (4-6 líneas). Ejemplo:]
-*"Este taller busca analizar [tema principal] mediante [metodología]. Los objetivos incluyen [objetivo 1], [objetivo 2] y [objetivo 3], aplicando conceptos vistos en clase como [concepto relevante]."*
+Este proyecto busca analizar el problema del riego óptimo de una finca mediante el diseño e implementación de algoritmos de fuerza bruta, voraces y de programación dinámica. Los objetivos incluyen comparar la eficiencia de distintas estrategias algorítmicas, evaluar su complejidad temporal y espacial, y determinar en qué casos cada enfoque produce soluciones óptimas. Para ello, se aplican conceptos vistos en clase como combinatoria, análisis de complejidad y diseño de algoritmos.
