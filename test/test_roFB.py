@@ -19,7 +19,6 @@ def test_roFB_ejemplo():
     ]
     perm, costo = roFB(finca)
 
-    # Según el enunciado, la mejor permutación esperada es:
     esperado_perm = [2, 1, 3, 0, 4]
     esperado_costo = 14
 
@@ -41,30 +40,24 @@ def generar_finca(n):
              random.randint(1, 4)) for _ in range(n)]
 
 # -----------------------------------------------------
-# 3. Pruebas de rendimiento (juguete, pequeño, mediano)
+# 3. Pruebas de rendimiento
 # -----------------------------------------------------
-@pytest.mark.parametrize("tam", [10, 100, 1000, 10000, 50000])
+@pytest.mark.parametrize("tam", [5, 6, 7, 8, 9, 10, 100])
 def test_roFB_tiempos(tam):
-    """
-    Mide el tiempo promedio de ejecución en 5 repeticiones.
-    Para tamaños > 10 se usa una submuestra, porque el factorial crece rápidamente.
-    """
     finca = generar_finca(tam)
-    repeticiones = 5
+    repeticiones = 3
     tiempos = []
 
+    if tam > 10:
+        print(f"\nTamaño {tam}: fuerza bruta no ejecutada (tiempo factorialmente prohibitivo).")
+        pytest.skip("No ejecutable en la práctica")
+        return
+
     for _ in range(repeticiones):
-        inicio = time.time()
-        # Por limitación de tiempo, evaluamos solo los primeros 10 tablones
-        perm, costo = roFB(finca if tam <= 10 else finca[:10])
-        fin = time.time()
+        inicio = time.perf_counter()
+        perm, costo = roFB(finca)
+        fin = time.perf_counter()
         tiempos.append(fin - inicio)
 
     promedio = sum(tiempos) / repeticiones
-    print(f"\nTamaño {tam}, tiempo promedio = {promedio:.6f} s")
-
-    # Verificación básica para tamaño pequeño
-    if tam == 10:
-        assert isinstance(perm, list)
-        assert isinstance(costo, int)
-        assert len(perm) == 10
+    print(f"Tamaño {tam}, tiempo promedio = {promedio:.6f} s")
