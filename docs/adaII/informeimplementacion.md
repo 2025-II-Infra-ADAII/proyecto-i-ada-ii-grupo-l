@@ -147,13 +147,16 @@ Definimos todo subconjunto para $S ⊆{0,…,n−1}$:
 Posteriormente, si en la solución optima, el utimo tablon en regar es $j ∈ S$ entonces:
 
 - La penalización añadida a $j$  es:
-
-                            $DP[S\setminus\{j\}]+pj​⋅max(0,(C(S∖{j})+trj​)−tsj​).$
+$$
+DP[S\setminus\{j\}]+pj​⋅max(0,(C(S∖{j})+trj​)−tsj​).
+$$
 
 - El tiempo acumulado antes de empezar $j$ es $(S\setminus\{j\})$
 - Al no conocer cual es el ultimo $j$, tomamos el mínimo sobre todos los $j ∈ S$:
 
-                   $DP[S] = min(DP[S\setminus\{j\}] + p_i*max(0,(C(S\setminus\{j\})+tr_j)+ts_j)$
+$$
+DP[S] = min(DP[S\setminus\{j\}] + p_i*max(0,(C(S\setminus\{j\})+tr_j)+ts_j)
+$$
 
 ### Reconstrucción de la permutación óptima
 
@@ -182,7 +185,9 @@ sea $F_1:$
 
 Para cada subconjunto S y cada tablón j ∈ S:
 
-$DP[S, t_{final}] = min(DP[S\{j, t_{anterior}] + p_j × max(0, (t_{anterior} + tr_j) - ts_j))$
+$$
+DP[S, t_{final}] = min(DP[S\{j, t_{anterior}] + p_j × max(0, (t_{anterior} + tr_j) - ts_j))
+$$
 
 **Subconjuntos de tamaño 1:**
 
