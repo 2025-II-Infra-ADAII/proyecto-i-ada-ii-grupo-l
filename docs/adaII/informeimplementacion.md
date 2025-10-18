@@ -147,9 +147,7 @@ Definimos todo subconjunto para $S ⊆{0,…,n−1}$:
 Posteriormente, si en la solución optima, el utimo tablon en regar es $j ∈ S$ entonces:
 
 - La penalización añadida a $j$  es:
-$$
-DP[S\setminus\{j\}]+pj​⋅max(0,(C(S∖{j})+trj​)−tsj​).
-$$
+$$DP[S\setminus\{j\}]+pj​⋅max(0,(C(S∖{j})+trj​)−tsj​).$$
 
 - El tiempo acumulado antes de empezar $j$ es $(S\setminus\{j\})$
 - Al no conocer cual es el ultimo $j$, tomamos el mínimo sobre todos los $j ∈ S$:
