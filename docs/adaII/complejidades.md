@@ -1,54 +1,81 @@
-# Informe de Complejidad — Problema de la Mochila 0/1
+# Informe de Complejidad - Problema de Riego Óptimo
 
-En este informe se presentan los análisis de **complejidad temporal** y **espacial** de las soluciones implementadas al problema de la mochila: fuerza bruta, programación dinámica y algoritmo voraz. Se utilizará notación matemática estándar para expresar el costo en función del número de objetos \(n\) y la capacidad de la mochila \(W\).
+## 1. Fuerza Bruta
 
 ---
 
-## 1. Fuerza bruta (solución ingenua)
+### Complejidad Temporal T(n)
 
-### Complejidad temporal
+Para un conjunto de ( n ) tablones:
 
-La fuerza bruta consiste en explorar absolutamente todas las combinaciones posibles de los objetos.  
-Cada objeto puede **incluirse o no incluirse** en la mochila, lo que genera un total de:
-\[
-2^n
-\]
-subconjuntos.
+1. Generar todas las permutaciones posibles de los índices $0, 1, 2, \dots, n-1$ tiene un costo de: $O(n!)$
+2. **Evaluación del costo para cada permutación:**
+    
+    La función `compute_cost_for_permutation` recorre todos los tablones dos veces:
+    
+    - Una vez para calcular los tiempos de inicio $(O(n))$.
+    - Otra vez para calcular el costo $(O(n))$.
+    
+    Por tanto, el costo de evaluar una permutación es:
+    
+    $$
+    (O(n))
+    $$
+    
+3. **Costo total del algoritmo:**
 
-Para cada subconjunto, se debe calcular el peso y el valor total, lo cual implica recorrer hasta \(n\) elementos. En el peor caso, se hace este recorrido en todas las combinaciones, resultando en:
-\[
-T(n) = O(n \cdot 2^n)
-\]
+$$
+O(n! \times n) = O(n \cdot n!)
+$$
 
-Esto significa que el algoritmo escala **exponencialmente**: un aumento modesto en el número de objetos hace que el tiempo de ejecución crezca de manera incontrolable. Por ejemplo, con \(n=30\), ya se tendrían más de mil millones de combinaciones a evaluar. Por eso, esta solución solo es viable para instancias muy pequeñas del problema.
+### 🔹 Ejemplo de crecimiento
 
-### Complejidad espacial
+| n | $n!$   | $n·n!$ (operaciones aproximadas) |
+| --- |--------|----------------------------------|
+| 4 | 24     | 96                               |
+| 6 | 720    | 4320                             |
+| 8 | 40320  | 322560                           |
+| 10 | 3.6×10⁶ | 3.6×10⁷                          |
 
-El algoritmo mantiene:
+El crecimiento factorial vuelve al algoritmo **inviable para n mayores a 10**, pues el tiempo de ejecución crece exponencialmente.
 
-- La lista de objetos: \(O(n)\).
-- Una lista temporal para almacenar subconjuntos (se libera al final de cada iteración).
+### Complejidad Espacial S(n)
+
+- Cada permutación se genera y procesa una a la vez por `itertools.permutations`, lo que evita almacenar todas las permutaciones en memoria.
+- Se usa memoria proporcional a:
+    - La lista `finca` → (O(n))
+    - La lista temporal `perm` → (O(n))
+    - Variables auxiliares (enteros, listas temporales pequeñas)
 
 Por tanto:
-\[
-S(n) = O(n)
-\]
+
+$$
+\text{Complejidad espacial } = O(n)
+$$
+
+### Corrección del algoritmo
+
+El método de fuerza bruta **garantiza la solución óptima**, ya que explora exhaustivamente **todas las posibles permutaciones** del orden de riego y selecciona la de menor costo.
+
+Formalmente:
+
+$$
+\text{roFB}(F) = \arg\min_{\Pi \in S_n} CRF_{\Pi}
+$$
+
+donde $S_n$ es el conjunto de todas las permutaciones de $n$ elementos.
+
+Por lo tanto, el algoritmo es **correcto y completo**, aunque **ineficiente para grandes valores de $n$**.
+
+## 2. Programación Dinámica
 
 ---
 
-## 2. Programación dinámica
+### Complejidad Temporal T(n)
 
-### Complejidad temporal
 
-La programación dinámica construye una tabla de tamaño \((n+1) \times (W+1)\).  
-Para cada uno de los \(n\) objetos, se recorren todas las capacidades parciales de la mochila (de 1 a \(W\)). Cada celda se calcula en tiempo constante, tomando el máximo entre incluir o no incluir el objeto. Por lo tanto:
-\[
-T(n, W) = O(n \cdot W)
-\]
 
-Esto significa que el tiempo crece de manera **lineal con respecto a \(n\)**, pero también depende de \(W\). Como \(W\) es un parámetro numérico y no una dimensión natural del input, se dice que esta complejidad es **pseudopolinomial**: parece polinómica, pero en realidad depende del valor numérico de la capacidad de la mochila. Si \(W\) es muy grande, el tiempo de ejecución se vuelve prohibitivo incluso para valores moderados de \(n\).
-
-### Complejidad espacial
+### Complejidad espacial S(n)
 
 - La tabla \(V\) requiere:
   \[
@@ -123,6 +150,20 @@ Recordar incluir la comparacion de tiempos con respecto a lo implementado. No se
 
 ## 5. Conclusiones
 
-- La **fuerza bruta** es inviable para \(n\) moderados debido a su crecimiento exponencial.
+---
+
+### Programación bruta:
+
+La solución por fuerza bruta genera todas las permutaciones posibles, por lo tanto su complejidad temporal es
+$O(n!⋅n)$.
+Se verificó experimentalmente que el tiempo crece factorialmente: la ejecución es factible hasta $n=10$.
+Para n mayores, el algoritmo resulta impracticable: por ejemplo, $n=100$ implicaría 9.3×10¹⁵⁷ permutaciones, lo que hace imposible su ejecución en cualquier computador actual.
+El enfoque de fuerza bruta sirve como **referencia base** para comparar las soluciones **voraces** y de **programación dinámica**, permitiendo verificar la corrección de sus resultados.
+
+### Programación dinámica:
+
 - La **programación dinámica** es óptima en exactitud, pero depende de \(W\), lo que puede ser prohibitivo si \(W\) es muy grande (pseudopolinomial).
+
+### Programación voraz:
+
 - El **algoritmo voraz** es eficiente en tiempo y espacio, pero no garantiza la solución óptima.
