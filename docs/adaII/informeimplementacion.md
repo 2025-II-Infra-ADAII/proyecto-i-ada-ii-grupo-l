@@ -1,166 +1,199 @@
-# Informe de Implementación — Problema de la Mochila 0/1
+# Informe de Implementación — Problema del Riego Óptimo
 
-## 0. Descripción del problema
-
-El **problema de la mochila 0/1** consiste en seleccionar un subconjunto de objetos con peso y valor, de manera que la suma de los pesos no exceda una capacidad máxima \(W\) y el valor total sea máximo.
-
-### Definición formal
-
-- Conjunto de \(n\) objetos: \(\{1, 2, \ldots, n\}\).
-- Cada objeto \(i\) tiene:
-  - Peso \(w_i \in \mathbb{Z}^+\).
-  - Valor \(v_i \in \mathbb{Z}^+\).
-- Capacidad de la mochila: \(W\).
-- Objetivo:
-  \[
-  \max \sum*{i=1}^n v_i x_i \quad \text{sujeto a } \sum*{i=1}^n w_i x_i \leq W, \quad x_i \in \{0,1\}.
-  \]
-
-### Ejemplo ilustrativo
-
-- Objetos:
-  1. \(w_1=2, v_1=3\)
-  2. \(w_2=3, v_2=4\)
-  3. \(w_3=4, v_3=5\)
-- Capacidad: \(W=5\).
-
-Subconjuntos válidos:
-
-- \(\{1,2\}\): peso \(2+3=5\), valor \(3+4=7\) → **óptimo**.
-- \(\{1,3\}\): peso 6 → inválido.
-
-La solución óptima es tomar los objetos 1 y 2 con valor total 7.
+# 0. Descripción del problema
 
 ---
 
-## 1. Lenguaje y herramientas usadas
+El **problema del riego óptimo** consiste en programar el orden en que se riegan los tablones de una finca, de manera que se minimice el sufrimiento de los cultivos al retrasar el riego. Cada tablón tiene:
+
+- $ts_i$: tiempo máximo que puede sobrevivir sin riego (supervivencia).
+- $tr_i$: tiempo necesario para ser regado.
+- $p_i$: prioridad del tablón (1 a 4, siendo 4 la más alta).
+
+El costo por sufrimiento de un tablón iii es:
+
+$$
+CRF[i]=pi⋅max⁡(0,(ti+tri)−tsi)
+$$
+
+donde $t_i$ es el tiempo de inicio de su riego. El objetivo es encontrar la permutación de los tablones que minimice el costo total:
+
+$$
+CRF_\Pi = \sum_{i=0}^{n-1} CRF[i]
+$$
+
+# 1. Lenguaje y herramientas usadas
+
+---
 
 - **Lenguaje:** Python 3.
-- **Bibliotecas estándar:** `itertools`, `time`, `random`.
-- **Estructuras usadas:** listas, diccionarios y arreglos bidimensionales.
-- **Motivación de elección:** Python facilita la implementación de algoritmos y pruebas rápidas, sin necesidad de compilación compleja.
+- **Bibliotecas estándar:** `itertools` para generar permutaciones, `time` para medir el tiempo de ejecución y `random` para generar los tablones aleatoriamente.
+- **Estructuras usadas:** listas y tuplas para representar la finca.
+- **Motivación de elección:** Python permite implementar rápidamente algoritmos de prueba como fuerza bruta, además de facilitar el uso de librerías de testing (`pytest`) y pipelines de integración continua.
+
+# 2. Estructura del proyecto
 
 ---
 
-## 2. Estructura del proyecto
-
-El proyecto se organizó en archivos principales:
-
-```
-
-knapsack_project/
-│
-├── knapsack_report.py # Implementaciones ingenua, dinámica y voraz
-├── benchmark.py # Script para medición de tiempos (no usado en este informe)
-├── plot_results.py # Script para graficar resultados (no usado en este informe)
-├── requirements.txt # Dependencias (matplotlib opcional)
-└── .github/
-└── workflows/
-└── ci.yml # Pipeline de compilación/ejecución
-
-```
-
----
-
-## 3. Ejecución del proyecto
-
-La ejecución se hace desde consola.
-
-### Ejemplo de ejecución básica:
+El proyecto se organizó en módulos, siguiendo la recomendación del enunciado:
 
 ```bash
-python knapsack_report.py
+riego_optimo/
+│
+├── src/
+│   ├── problema_riego.py # Solución por fuerza bruta, algoritmo voraz y programación dinámica
+│   └── main.py        # Entrada/salida de archivos
+│
+├── tests/
+│   ├── test_roFB.py   # Pruebas unitarias con pytest
+│   ├── test_roV.py   # Pruebas unitarias con pytest
+│   └── test_roPD.py   # Pruebas unitarias con pytest
+│
+├── docs/
+│   ├── Informe_Complejidad.md
+│   └── Informe_implementación.md     # Informe en formato markdown
+│
+├── README.md
+└── .github/
+    └── workflows/
+        └── ci.yml     # Pipeline de integración continua
+
 ```
 
-### Parámetros técnicos
+# 3. Ejecución del proyecto
 
-- El programa puede generar instancias aleatorias con:
-  - `n`: número de objetos.
-  - `max_weight`: peso máximo de un objeto.
-  - `max_value`: valor máximo de un objeto.
-  - `seed`: semilla para reproducibilidad.
+---
 
-- Ejemplo:
+El programa se ejecuta desde consola con el archivo `main.py`.
+
+### Ejemplo de uso:
+
+```bash
+python main.py entrada.txt salida.txt
+```
+
+### Formato de entrada (`entrada.txt`)
+
+La entrada vendrá en un archivo de texto con n + 1 líneas:
+
+```
+5 --> n
+10,3,4 --> ts0,tr0,p0
+5,3,3 --> ts1,tr1,p1
+2,2,1
+8,1,1
+6,4,2
+----------------------
+ts(n-1),tr(n-1),p(n-1)
+(es decir, primera lınea n, luego n liıneas con los valores de cada tablón separados por comas).
+```
+
+### Formato de salida (`salida.txt`)
+
+La salida se deberá producir en un archivo de texto con n + 1 líneas:
+
+```
+14 --> Costo
+2 --> pi0
+1 --> pi1
+3 ...
+0 ...
+4 --> pi (n-1)
+```
+
+# 4. Ideas de solución
+
+---
+
+## a) Solución ingenua (fuerza bruta)
+
+El enfoque consiste en generar **todas las permutaciones** posibles de los tablones:
+
+$$
+\Pi = \langle \pi_0, \pi_1, \dots, \pi_{n-1}\rangle
+$$
+
+Para cada permutación se calculan los tiempos de inicio (t_{\pi_j}) de acuerdo con:
+
+$$
+t_{\pi_0} = 0, \quad t_{\pi_j} = t_{\pi_{j-1}} + tr_{\pi_{j-1}} \quad (j=1,\dots,n-1)
+$$
+
+Luego, el costo de cada tablón se evalúa con:
+
+$$
+CRF[i] = p_i \cdot \max \Big( 0, (t_i + tr_i) - ts_i \Big)
+$$
+
+y se suma para obtener el costo total $CRF_\Pi$.
+
+Finalmente, se escoge la permutación con menor costo.
+
+- **Complejidad temporal:** $O(n! \cdot n)$ (muy costosa, solo viable para $n \leq 10$).
+- **Correctitud:** garantiza encontrar la solución óptima.
+
+**Ejemplo:** con la entrada de 5 tablones mostrada arriba, la mejor permutación encontrada fue (2,1,3,0,4), con un costo total de 14.
+
+---
+
+## b) Solución dinámica
+
+## c) Solución voraz
+
+# 5. Partes importantes del código
+
+---
+
+## Cálculo del costo de una permutación
 
 ```python
-from knapsack_report import gen_instance, knapsack_dp
-items, W = gen_instance(10, 20, 100, seed=1)
-print(knapsack_dp(items, W))
+def compute_cost_for_permutation(finca, perm):
+    n = len(finca)
+    t_start = [0] * n
+    tiempo = 0
+    for idx in perm:
+        t_start[idx] = tiempo
+        tiempo += finca[idx][1]  # sumar tr_i
+
+    costo = 0
+    for i in range(n):
+        ts_i, tr_i, p_i = finca[i]
+        retraso = (t_start[i] + tr_i) - ts_i
+        if retraso > 0:
+            costo += p_i * retraso
+    return costo
+
 ```
 
----
-
-## 4. Ideas de solución
-
-### a) Solución ingenua (fuerza bruta)
-
-Generar todos los subconjuntos ($2^n$) y elegir el de mayor valor que cumpla la restricción:
-
-$$
-\text{Óptimo} = \max_{S \subseteq \{1,\dots,n\},\; \sum_{i \in S} w_i \leq W} \sum_{i \in S} v_i
-$$
-
-**Ejemplo:** con $W=5$, objetos como el caso introductorio → se recorren todos los subconjuntos hasta encontrar $\{1,2\}$.
+👉 Aquí se implementa la fórmula matemática del costo de cada tablón.
 
 ---
 
-### b) Solución dinámica
+## Función principal por fuerza bruta
 
-Definición recursiva:
+```python
+import itertools
 
-$$
-V[i][w] =
-\begin{cases}
-V[i-1][w], & w_i > w \\
-\max\big(V[i-1][w],\; V[i-1][w-w_i] + v_i\big), & w_i \leq w
-\end{cases}
-$$
+def roFB(finca):
+    n = len(finca)
+    indices = list(range(n))
+    best_perm, best_cost = [], float("inf")
 
-Donde $V[i][w]$ es el mejor valor con los primeros $i$ objetos y capacidad $w$.
-Se construye de manera **bottom-up** llenando una tabla bidimensional.
+    for perm in itertools.permutations(indices):
+        costo = compute_cost_for_permutation(finca, perm)
+        if costo < best_cost:
+            best_cost = costo
+            best_perm = list(perm)
 
-**Ejemplo:** para $n=3, W=5$, se obtiene que $V[3][5]=7$, con los objetos 1 y 2.
+    return best_perm, best_cost
 
----
+```
 
-### c) Solución voraz
+👉 Esta función genera todas las permutaciones con `itertools.permutations`, evalúa cada una con `compute_cost_for_permutation` y selecciona la mejor. Retorna la permutación óptima y su costo asociado, cumpliendo con el formato del enunciado.
 
-Ordenar los objetos por eficiencia:
-
-$$
-\text{ratio}_i = \frac{v_i}{w_i}
-$$
-
-y agregar al conjunto mientras la capacidad lo permita.
-
-**Ejemplo:** con objetos
-
-1. $v/w = 1.5$,
-2. $v/w = 1.33$,
-3. $v/w = 1.25$.
-   Se eligen primero los más eficientes hasta llenar la capacidad.
+# 6. Pipeline de compilación/ejecución
 
 ---
-
-## 5. Partes importantes del código
-
-- **Generación de instancias (`gen_instance`)**
-  Permite crear listas de objetos aleatorios y fijar una capacidad $W$. Relaciona pesos y valores de forma controlada.
-
-- **Fuerza bruta (`knapsack_bruteforce`)**
-  Recorre subconjuntos mediante bitmasks. Se incluye **poda temprana**: si la suma de pesos supera $W$, se descarta inmediatamente.
-
-- **Programación dinámica (`knapsack_dp`)**
-  Construye una tabla `V` y aplica la recurrencia matemática. Después, reconstruye la solución verificando si un objeto fue incluido comparando `V[i][w]` con `V[i-1][w]`.
-
-- **Voraz (`knapsack_greedy_ratio`)**
-  Ordena por $\frac{v_i}{w_i}$ y selecciona mientras quepa. Refleja fielmente la heurística.
-
-Cada módulo se ajusta a la definición matemática explicada en la sección 4.
-
----
-
-## 6. Pipeline de compilación/ejecución
 
 Se definió un pipeline simple de integración continua en **GitHub Actions** para verificar que el proyecto se ejecute sin errores (no incluye pruebas de rendimiento ni validación).
 
@@ -197,6 +230,13 @@ jobs:
           python knapsack_report.py
 ```
 
-```
+# 7. Conclusión parcial
 
-```
+---
+
+La solución por **fuerza bruta (roFB)**:
+
+- Fue implementada en Python de manera clara y modular.
+- Sigue exactamente las definiciones matemáticas del enunciado.
+- Garantiza obtener la programación de riego óptima.
+- Aunque es computacionalmente ineficiente para instancias grandes, sirve como referencia de comparación para las soluciones **voraz** y **dinámica**.
