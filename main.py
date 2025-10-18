@@ -1,5 +1,7 @@
 import sys
 from problema_riego import roFB  # importa la función que ya implementamos
+from problema_riego import roPD
+from problema_riego import roV
 
 def read_finca(file_path: str):
     """
@@ -40,9 +42,18 @@ def main():
     input_file = sys.argv[1]
     output_file = sys.argv[2]
 
+    out_fb = output_file + "_FB.txt"
+    out_pd = output_file + "_PD.txt"
+    out_V = output_file + "_V.txt"
     finca = read_finca(input_file)
-    perm, costo = roFB(finca)
-    write_solution(output_file, perm, costo)
+
+    #Se muestra la salida por medio de archivos diferentes para cada algoritmo
+    perm, costo = roFB(finca) 
+    perm, costo = roPD(finca)
+    perm, costo = roV(finca)
+    write_solution(out_fb, perm, costo)
+    write_solution(out_pd, perm, costo)
+    write_solution(out_V, perm, costo)
 
 if __name__ == "__main__":
     main()

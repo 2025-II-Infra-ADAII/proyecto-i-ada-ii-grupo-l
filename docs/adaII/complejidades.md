@@ -69,22 +69,9 @@ Por lo tanto, el algoritmo es **correcto y completo**, aunque **ineficiente para
 
 ## 2. Programación Dinámica
 
----
-
-### Complejidad Temporal T(n)
-
-
-
-### Complejidad espacial S(n)
-
-- La tabla \(V\) requiere:
-  \[
-  S(n, W) = O(n \cdot W)
-  \]
-- Puede optimizarse guardando solo dos filas (fila actual y anterior), reduciendo a:
-  \[
-  S\_{\text{optimizado}}(W) = O(W)
-  \]
+$$
+S(n) = O(2^n)
+$$
 
 ---
 
@@ -130,9 +117,9 @@ S(n) = O(n)
 
 | Estrategia            | Complejidad temporal | Complejidad espacial                   |
 | --------------------- | -------------------- | -------------------------------------- |
-| Fuerza bruta          | \(O(n \cdot 2^n)\)   | \(O(n)\)                               |
-| Programación dinámica | \(O(n \cdot W)\)     | \(O(n \cdot W)\) ó \(O(W)\) optimizado |
-| Voraz                 | \(O(n \log n)\)      | \(O(n)\)                               |
+| Fuerza bruta          | $\(O(n \cdot 2^n)\)$   | $\(O(n)\)$                               |
+| Programación dinámica | $\(O(n \cdot W)\) $    | $\(O(n \cdot W)\) ó \(O(W)\)$ optimizado |
+| Voraz                 | $\(O(n \log n)\) $    | $\(O(n)\)$                               |
 
 ---
 
@@ -140,17 +127,22 @@ S(n) = O(n)
 
 Comparacion teorica de complejidades en tiempo y espacio para las tres estrategias implementadas.
 
-! [Comparativa de tiempo](../imagenes/g1.png)
+![Comparativa de tiempo](imagenes/g1.png)
 
 Analisis de DP con W con n fijo
 
-! [Comparativa DP](../imagenes/g2.png)
+![Comparativa DP](imagenes/g2.png)
 
 Recordar incluir la comparacion de tiempos con respecto a lo implementado. No se incluye en este ejemplo.
 
-## 5. Conclusiones
+
+Comparacion teorica de complejidades en caso practico y teorico de PD.
+
+|[Comparativa complejidad](imagenes/PD1.png)
 
 ---
+
+## 5. Conclusiones
 
 ### Programación bruta:
 
@@ -162,7 +154,7 @@ El enfoque de fuerza bruta sirve como **referencia base** para comparar las solu
 
 ### Programación dinámica:
 
-- La **programación dinámica** es óptima en exactitud, pero depende de \(W\), lo que puede ser prohibitivo si \(W\) es muy grande (pseudopolinomial).
+En el punto de vista del costo computacional un costo de $O(n*2^n)$ hace que para tamaños pequeños de tablones sea mucho más eficiente que la solucion bruta, sin embargo, cuando $numeroTablones > 20$, entonces el tiempo crece tanto que resulta inviable y casi imposible de calcular.
 
 ### Programación voraz:
 

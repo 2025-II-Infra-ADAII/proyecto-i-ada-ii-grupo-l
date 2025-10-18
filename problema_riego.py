@@ -64,11 +64,47 @@ def roV(finca):
 
     return orden, costo_total
 
-
 def roPD(finca):
-    """
-    Programación dinámica.
-    Devuelve (pi, costo)
-    """
-    # Aquí más adelante se implementa programación dinámica
-    pass
+    # Finca = Secuencia de tablones
+    # Ti = tupla (ts,tr,p)
+    # CRF[i] = p * max(0,(ti^II + tr) - ts)
+    n = len(finca)
+    DP = {}
+    parent = {}
+
+
+    DP[0] = (0, 0)  # caso base
+    parent[0] = -1
+
+    for mask in range(1, 1 << n):
+        DP[mask] = (float("inf"), 0)
+        for i in range(n):
+            if mask & (1 << i):
+                prev_mask = mask ^ (1 << i)
+                if prev_mask not in DP:
+                    continue
+
+                costo_prev, tiempo_prev = DP[prev_mask]
+                ts, tr, p = finca[i]
+
+                t_final = tiempo_prev + tr
+                retraso = max(0, t_final - ts)
+                costo_nuevo = costo_prev + p * retraso
+
+                if costo_nuevo < DP[mask][0]:
+                    DP[mask] = (costo_nuevo, t_final)
+                    parent[mask] = (prev_mask, i)
+
+    mask_completo = (1 << n) - 1
+    costo_minimo, _ = DP[mask_completo]
+
+    permutacion = []
+    mask_actual = mask_completo
+
+    while mask_actual != 0:
+        prev_mask, idx_tablon = parent[mask_actual]
+        permutacion.append(idx_tablon)
+        mask_actual = prev_mask
+
+    permutacion.reverse()
+    return permutacion, costo_minimo

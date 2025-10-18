@@ -138,6 +138,73 @@ Finalmente, se escoge la permutación con menor costo.
 
 ## b) Solución dinámica
 
+El enfoque por solución dinámica consiste en descomponer el problema en subproblemas más pequeños, en este caso calculando la permutación de cada tablón: 
+
+Definimos todo subconjunto para $S ⊆{0,…,n−1}$:
+
+- Donde $DP[S] =$ mínimo $CRF$ al regar las tareas del conjunto $S$
+
+Posteriormente, si en la solución optima, el utimo tablon en regar es $j ∈ S$ entonces:
+
+- La penalización añadida a $j$  es:
+
+                            $DP[S\setminus\{j\}]+pj​⋅max(0,(C(S∖{j})+trj​)−tsj​).$
+
+- El tiempo acumulado antes de empezar $j$ es $(S\setminus\{j\})$
+- Al no conocer cual es el ultimo $j$, tomamos el mínimo sobre todos los $j ∈ S$:
+
+                   $DP[S] = min(DP[S\setminus\{j\}] + p_i*max(0,(C(S\setminus\{j\})+tr_j)+ts_j)$
+
+### Reconstrucción de la permutación óptima
+
+Al calcular $DP[S]$ se guarda para cada $S$ el indice $j*S$. 
+
+Empezando desde $S=(0,…,n−1)$ reconstruyendo la permutación de forma iterativa.
+
+- $j1=j∗(S)$ es la última tarea en la solución óptima de $S$
+- Se reemplaza $S <= S\setminus\{j\}$
+
+Al final obteniendo así el orden inverso, lo que retorna la permutación $II$ completa.
+
+### Ejemplo:
+
+sea $F_1:$
+
+| **i** | **ts_i** | **tr_i** | **p_i** |
+| --- | --- | --- | --- |
+| 0 | 10 | 3 | 4 |
+| 1 | 5 | 3 | 3 |
+| 2 | 2 | 2 | 1 |
+| 3 | 8 | 1 | 1 |
+| 4 | 6 | 4 | 2 |
+
+**Caso base:** $DP[∅, 0] = 0$ 
+
+Para cada subconjunto S y cada tablón j ∈ S:
+
+$DP[S, t_{final}] = min(DP[S\{j, t_{anterior}] + p_j × max(0, (t_{anterior} + tr_j) - ts_j))$
+
+**Subconjuntos de tamaño 1:**
+
+- DP[{2}, 2] = 0 + 1×max(0, 2-2) = 0 (regar tablón 2 primero)
+- DP[{3}, 1] = 0 + 1×max(0, 1-8) = 0 (regar tablón 3 primero)
+- DP[{1}, 3] = 0 + 3×max(0, 3-5) = 0 (regar tablón 1 primero)
+
+**Subconjuntos de tamaño 2:**
+
+- DP[{2,1}, 5] = DP[{2}, 2] + 3×max(0, 5-5) = 0 + 0 = 0
+- DP[{2,3}, 3] = DP[{2}, 2] + 1×max(0, 3-8) = 0 + 0 = 0
+
+Y así sucesivamente hasta alcanzar el conjunto completo {0,1,2,3,4}.
+
+### Resultado final:
+
+Según el código implementado, al evaluar todos los subconjuntos posibles y reconstruir la permutación óptima desde el estado final, se obtiene:
+
+- **Permutación óptima:** (2, 1, 3, 0, 4)
+- **Costo total:** 14
+
+
 ## c) Solución voraz
 
 # 5. Partes importantes del código
@@ -188,6 +255,76 @@ def roFB(finca):
     return best_perm, best_cost
 
 ```
+
+## Función principal por programación dinámica
+
+```python
+def roPD(finca):
+    #Finca = Secuencia de tablones
+    #Ti = tupla (ts,tr,p)
+    #CRF[i] = p * max(0,(ti^II + tr) - ts) 
+    n = len(finca)
+    DP = {}
+    parent = {}
+
+    DP[(0, 0)] = 0 # caso base
+    parent[(0, 0)] = -1
+    
+    for mask in range(1, 1 << n):
+        tablones_en_mask = [i for i in range(n) if mask & (1 << i)]
+        
+        for i in tablones_en_mask:
+            prev_mask = mask ^ (1 << i)
+
+            if prev_mask == 0:
+                prev_tiempos = [0]
+            else:
+                prev_tiempos = [t for (s, t) in DP.keys() if s == prev_mask]
+            
+            for t_anterior in prev_tiempos:
+                if (prev_mask, t_anterior) not in DP:
+                    continue
+                
+                costo_anterior = DP[(prev_mask, t_anterior)]
+                ts, tr, p = finca[i]
+                
+                t_inicio = t_anterior
+                t_final = t_inicio + tr
+                retraso = max(0, t_final - ts)
+                costo_suficiencia = p * retraso
+                costo_nuevo = costo_anterior + costo_suficiencia
+
+                if (mask, t_final) not in DP or DP[(mask, t_final)] > costo_nuevo:
+                    DP[(mask, t_final)] = costo_nuevo
+                    parent[(mask, t_final)] = (prev_mask, t_anterior, i)
+
+    mask_completo = (1 << n) - 1
+    costo_minimo = float('inf')
+    tiempo_optimo = -1
+    
+    for (mask, t_final) in DP.keys():
+        if mask == mask_completo and DP[(mask, t_final)] < costo_minimo:
+            costo_minimo = DP[(mask, t_final)]
+            tiempo_optimo = t_final
+
+    permutacion = []
+    mask_actual = mask_completo
+    tiempo_actual = tiempo_optimo
+    
+    while mask_actual != 0:
+        prev_mask, prev_tiempo, idx_tablon = parent[(mask_actual, tiempo_actual)]
+        permutacion.append(idx_tablon)
+        mask_actual = prev_mask
+        tiempo_actual = prev_tiempo
+    
+    permutacion.reverse()
+    return permutacion, costo_minimo
+```
+
+Esta función busca la **permutación optima**, haciendo uso de `mask` el cual representa los subproblemas (tablones regados) y `dp(mask)` devuelve el costo mínimo total de regar ese tablón. De forma que, se prueban todas las posibles opciones para elegir la **solución optima**.
+
+Usando el diccionario `parent`, el algoritmo reconstruye la **permutación óptima** recorriendo los estados desde el final (`mask_completo`) hacia atrás, hasta llegar al estado vacío `(0,0)`.
+
 
 👉 Esta función genera todas las permutaciones con `itertools.permutations`, evalúa cada una con `compute_cost_for_permutation` y selecciona la mejor. Retorna la permutación óptima y su costo asociado, cumpliendo con el formato del enunciado.
 
@@ -240,3 +377,11 @@ La solución por **fuerza bruta (roFB)**:
 - Sigue exactamente las definiciones matemáticas del enunciado.
 - Garantiza obtener la programación de riego óptima.
 - Aunque es computacionalmente ineficiente para instancias grandes, sirve como referencia de comparación para las soluciones **voraz** y **dinámica**.
+
+La solución **dinámica (roPD)**:
+
+- Fue implementada de forma concisa en Python.
+- Identifica la subestructura óptima.
+- Evalúa cada permutación para encontrar la solución optima.
+- Garantiza una solución óptima.
+- Muestra una gran optimización en costo computacional y tiempo de ejecución respecto a la solución por fuerza bruta.
