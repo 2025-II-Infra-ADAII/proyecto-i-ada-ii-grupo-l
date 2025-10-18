@@ -67,28 +67,7 @@ donde $S_n$ es el conjunto de todas las permutaciones de $n$ elementos.
 
 Por lo tanto, el algoritmo es **correcto y completo**, aunque **ineficiente para grandes valores de $n$**.
 
----
-
-# 2. Programación Dinámica
-
-## Complejidad Temporal T(n)
-
-- $S$ tiene una cantidad $2^n$  de subconjuntos posibles dado por las `mask` .
-- Para cada subconjunto se itera sobre los tablones activos.
-- Para cada tablón se busca tomar su tiempo, donde en el peor caso puede haber varios pero el número total de estados `(mask)` crece proporcionalmente al número de combinaciones distintas.
-
-Teniendo esto en cuenta, la complejidad T(n) de la solución dinámica es de:
-
-$$
-T(n) = O(n*2^n)
-$$
-
-## Complejidad Espacial S(n)
-
-- En memoria se almacena un valor $DP[S]$ por cada conjunto $S$
-- $DP$ guarda al menos un valor por cada combinación posible de `(mask, t)`
-
-Por lo tanto, la complejidad espacial S(n) es de:
+## 2. Programación Dinámica
 
 $$
 S(n) = O(2^n)
