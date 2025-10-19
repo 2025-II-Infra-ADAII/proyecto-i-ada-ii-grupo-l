@@ -140,14 +140,12 @@ En la siguiente sección se presenta una comparación entre las tres estrategias
 
 La siguiente figura muestra el costo total obtenido por cada estrategia para un número creciente de tablones. Se hizo con valores pequeños debido a que el crecimiento exponcial no permite ver la diferencia entre las tres opciones.
 
-![Comparativa de tiempo](imagenes/complejidadTemporal.png)
+![Comparativa complejidad T](imagenes/complejidades.jpg)
 
 Se observa que el costo de fuerza bruta obtiene se dispara, mientras que el algoritmo voraz y la programación dinámica logran valores cercanos con un costo computacional mucho menor.
 A medida que el número de tablones crece, la diferencia en tiempo de ejecución se vuelve determinante.
 
-![Comparativa DP](imagenes/complejidadEspacial.png)
-
-Recordar incluir la comparacion de tiempos con respecto a lo implementado. No se incluye en este ejemplo.
+![Comparativa complejidad FB](imagenes/FB.jpg)
 
 La complejidad temporal de la fuerza bruta es factorial, $T(n)=O(n!⋅n)$, lo cual se refleja en el crecimiento abrupto del tiempo de ejecución. La complejidad espacial $S(n)=O(n)$ resulta lineal, ya que solo se almacenan estructuras proporcionales al número de tablones.
 
@@ -156,6 +154,20 @@ Comparacion teorica de complejidades en caso practico y teorico de PD.
 ![Comparativa complejidad](imagenes/PD1.png)
 
 En la solución dinámica, el tiempo crece aproximadamente de forma exponencial $O(n^2 \cdot 2^n)$, aunque mucho más lento que el crecimiento factorial de la fuerza bruta. Se aprecia que la curva práctica se aproxima bastante a la teórica, evidenciando la consistencia del análisis de complejidad.
+
+
+
+![Comparativa complejidad espacial](imagenes/complejidadEspacial.png)
+
+La figura anterior muestra la **comparación teórica de la complejidad espacial** para los tres enfoques propuestos. Se observa que tanto la fuerza bruta como el algoritmo voraz tienen un crecimiento lineal, mientras que la programación dinámica exhibe un incremento exponencial en el uso de memoria a medida que aumenta el número de tablones. Esto refleja el costo asociado a mantener las subsoluciones en memoria, característico de este enfoque.
+
+
+
+![Comparativa complejidad temporal](imagenes/complejidadTemporal.png)
+
+En la figura se presenta la **comparación teórica de la complejidad temporal** de los tres métodos. El algoritmo de fuerza bruta muestra un crecimiento factorial, mientras que la programación dinámica alcanza un crecimiento exponencial controlado. En contraste, el método voraz mantiene un incremento casi lineal, lo que lo convierte en la alternativa más eficiente para casos de gran tamaño.
+
+---
 
 ## 5. Conclusiones
 
