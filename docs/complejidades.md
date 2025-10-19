@@ -155,6 +155,20 @@ Comparacion teorica de complejidades en caso practico y teorico de PD.
 
 En la solución dinámica, el tiempo crece aproximadamente de forma exponencial $O(n^2 \cdot 2^n)$, aunque mucho más lento que el crecimiento factorial de la fuerza bruta. Se aprecia que la curva práctica se aproxima bastante a la teórica, evidenciando la consistencia del análisis de complejidad.
 
+
+
+![Comparativa complejidad espacial](imagenes/complejidadEspacial.png)
+
+La figura anterior muestra la **comparación teórica de la complejidad espacial** para los tres enfoques propuestos. Se observa que tanto la fuerza bruta como el algoritmo voraz tienen un crecimiento lineal, mientras que la programación dinámica exhibe un incremento exponencial en el uso de memoria a medida que aumenta el número de tablones. Esto refleja el costo asociado a mantener las subsoluciones en memoria, característico de este enfoque.
+
+
+
+![Comparativa complejidad temporal](imagenes/complejidadTemporal.png)
+
+En la figura se presenta la **comparación teórica de la complejidad temporal** de los tres métodos. El algoritmo de fuerza bruta muestra un crecimiento factorial, mientras que la programación dinámica alcanza un crecimiento exponencial controlado. En contraste, el método voraz mantiene un incremento casi lineal, lo que lo convierte en la alternativa más eficiente para casos de gran tamaño.
+
+---
+
 ## 5. Conclusiones
 
 ---
