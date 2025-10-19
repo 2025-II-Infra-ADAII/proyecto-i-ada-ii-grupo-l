@@ -1,6 +1,6 @@
 # Informe de Implementación — Problema del Riego Óptimo
 
-# 0. Descripción del problema
+## 0. Descripción del problema
 
 ---
 
@@ -22,7 +22,7 @@ $$
 CRF_\Pi = \sum_{i=0}^{n-1} CRF[i]
 $$
 
-# 1. Lenguaje y herramientas usadas
+## 1. Lenguaje y herramientas usadas
 
 ---
 
@@ -31,7 +31,7 @@ $$
 - **Estructuras usadas:** listas y tuplas para representar la finca.
 - **Motivación de elección:** Python permite implementar rápidamente algoritmos de prueba como fuerza bruta, además de facilitar el uso de librerías de testing (`pytest`) y pipelines de integración continua.
 
-# 2. Estructura del proyecto
+## 2. Estructura del proyecto
 
 ---
 
@@ -60,13 +60,13 @@ riego_optimo/
 
 ```
 
-# 3. Ejecución del proyecto
+## 3. Ejecución del proyecto
 
 ---
 
 El programa se ejecuta desde consola con el archivo `main.py`.
 
-### Ejemplo de uso:
+#### Ejemplo de uso:
 
 ```bash
 python main.py entrada.txt salida.txt
@@ -101,11 +101,11 @@ La salida se deberá producir en un archivo de texto con n + 1 líneas:
 4 --> pi (n-1)
 ```
 
-# 4. Ideas de solución
+## 4. Ideas de solución
 
 ---
 
-## a) Solución ingenua (fuerza bruta)
+### a) Solución ingenua (fuerza bruta)
 
 El enfoque consiste en generar **todas las permutaciones** posibles de los tablones:
 
@@ -132,11 +132,20 @@ Finalmente, se escoge la permutación con menor costo.
 - **Complejidad temporal:** $O(n! \cdot n)$ (muy costosa, solo viable para $n \leq 10$).
 - **Correctitud:** garantiza encontrar la solución óptima.
 
-**Ejemplo:** con la entrada de 5 tablones mostrada arriba, la mejor permutación encontrada fue (2,1,3,0,4), con un costo total de 14.
+##### Ejemplo de crecimiento
+
+| n | $n!$   | $n·n!$ (operaciones aproximadas) |
+| --- |--------|----------------------------------|
+| 4 | 24     | 96                               |
+| 6 | 720    | 4320                             |
+| 8 | 40320  | 322560                           |
+| 10 | 3.6×10⁶ | 3.6×10⁷                          |
+
+El crecimiento factorial vuelve al algoritmo **inviable para n mayores a 10**, pues el tiempo de ejecución crece exponencialmente.
 
 ---
 
-## b) Solución dinámica
+### b) Solución dinámica
 
 El enfoque por solución dinámica consiste en descomponer el problema en subproblemas más pequeños, en este caso calculando la permutación de cada tablón: 
 
@@ -156,7 +165,7 @@ $$
 DP[S] = min(DP[S\setminus\{j\}] + p_i*max(0,(C(S\setminus\{j\})+tr_j)+ts_j)
 $$
 
-### Reconstrucción de la permutación óptima
+#### Reconstrucción de la permutación óptima
 
 Al calcular $DP[S]$ se guarda para cada $S$ el indice $j*S$. 
 
@@ -167,11 +176,11 @@ Empezando desde $S=(0,…,n−1)$ reconstruyendo la permutación de forma iterat
 
 Al final obteniendo así el orden inverso, lo que retorna la permutación $II$ completa.
 
-### Ejemplo:
+#### Ejemplo:
 
 sea $F_1:$
 
-| **i** | **ts_i** | **tr_i** | **p_i** |
+| **$i$** | **$ts_i$** | **$tr_i$** | **$p_i$** |
 | --- | --- | --- | --- |
 | 0 | 10 | 3 | 4 |
 | 1 | 5 | 3 | 3 |
@@ -200,7 +209,7 @@ $$
 
 Y así sucesivamente hasta alcanzar el conjunto completo {0,1,2,3,4}.
 
-### Resultado final:
+#### Resultado final:
 
 Según el código implementado, al evaluar todos los subconjuntos posibles y reconstruir la permutación óptima desde el estado final, se obtiene:
 
@@ -208,13 +217,13 @@ Según el código implementado, al evaluar todos los subconjuntos posibles y rec
 - **Costo total:** 14
 
 
-## c) Solución voraz
+### c) Solución voraz
 
 El enfoque **voraz** busca construir una solución de forma **rápida y aproximada**, tomando decisiones locales que se espera conduzcan a un resultado cercano al óptimo.
 
 En este problema, el algoritmo selecciona el orden de riego según una **regla de prioridad**, sin explorar todas las permutaciones posibles como la fuerza bruta ni usar almacenamiento intermedio como la dinámica.
 
-### Idea principal
+#### Idea principal
 
 Cada tablón $i$ se describe por:
 
@@ -230,7 +239,7 @@ Por ello, se define la **razón voraz**:
 
 El algoritmo ordena los tablones de forma descendente según esta razón, y luego calcula el costo total en ese orden.
 
-### Ejemplo de ejecución
+#### Ejemplo de ejecución
 
 Para la finca  $F_1 = \langle (10,3,4), (5,3,3), (2,2,1), (8,1,1), (6,4,2) \rangle$ :
 
@@ -247,9 +256,7 @@ Para la finca  $F_1 = \langle (10,3,4), (5,3,3), (2,2,1), (8,1,1), (6,4,2) \rang
 
 El resultado es cercano al óptimo, pero no exacto, demostrando la naturaleza aproximada del enfoque voraz.
 
----
-
-### Complejidad
+#### Complejidad
 
 - **Ordenamiento:**  $O(n \log n)$
 - **Cálculo del costo:**  $O(n)$
@@ -257,19 +264,17 @@ El resultado es cercano al óptimo, pero no exacto, demostrando la naturaleza ap
 
 Este algoritmo es significativamente más rápido que la fuerza bruta $(O(n!))$ y más simple que la programación dinámica.
 
----
-
-### Observaciones
+#### Observaciones
 
 - El método voraz obtiene soluciones **óptimas en algunos casos simples** (por ejemplo, cuando la prioridad y supervivencia están equilibradas).
 - En casos más complejos, produce soluciones **cercanas al óptimo**, pero no exactas.
 - A cambio, ofrece una **excelente relación costo/tiempo**, siendo apropiado para problemas con grandes cantidades de tablones.
 
-# 5. Partes importantes del código
+## 5. Partes importantes del código
 
 ---
 
-## Cálculo del costo de una permutación
+### Cálculo del costo de una permutación
 
 ```python
 def compute_cost_for_permutation(finca, perm):
@@ -290,11 +295,9 @@ def compute_cost_for_permutation(finca, perm):
 
 ```
 
-👉 Aquí se implementa la fórmula matemática del costo de cada tablón.
+Aquí se implementa la fórmula matemática del costo de cada tablón.
 
----
-
-## Función principal por fuerza bruta
+### Función principal por fuerza bruta
 
 ```python
 import itertools
@@ -314,7 +317,7 @@ def roFB(finca):
 
 ```
 
-## Función principal por programación dinámica
+### Función principal por programación dinámica
 
 ```python
 def roPD(finca):
@@ -383,12 +386,11 @@ Esta función busca la **permutación optima**, haciendo uso de `mask` el cual r
 
 Usando el diccionario `parent`, el algoritmo reconstruye la **permutación óptima** recorriendo los estados desde el final (`mask_completo`) hacia atrás, hasta llegar al estado vacío `(0,0)`.
 
-
-👉 Esta función genera todas las permutaciones con `itertools.permutations`, evalúa cada una con `compute_cost_for_permutation` y selecciona la mejor. Retorna la permutación óptima y su costo asociado, cumpliendo con el formato del enunciado.
+Esta función genera todas las permutaciones con `itertools.permutations`, evalúa cada una con `compute_cost_for_permutation` y selecciona la mejor. Retorna la permutación óptima y su costo asociado, cumpliendo con el formato del enunciado.
 
 ---
 
-## Función principal por programación voraz
+### Función principal por programación voraz
 
 ```python
 def roV(finca):
@@ -421,7 +423,7 @@ Durante la ejecución, se calcula el **costo total** acumulando penalizaciones p
 El algoritmo devuelve el **orden obtenido** y su **costo asociado**, proporcionando una solución eficiente con complejidad **O(n log n)**, aunque no siempre óptima.
 
 
-# 6. Pipeline de compilación/ejecución
+## 6. Pipeline de compilación/ejecución
 
 ---
 
@@ -460,7 +462,7 @@ jobs:
           python knapsack_report.py
 ```
 
-# 7. Conclusión parcial
+## 7. Conclusión parcial
 
 ---
 

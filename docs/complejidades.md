@@ -28,17 +28,6 @@ $$
 O(n! \times n) = O(n \cdot n!)
 $$
 
-### 🔹 Ejemplo de crecimiento
-
-| n | $n!$   | $n·n!$ (operaciones aproximadas) |
-| --- |--------|----------------------------------|
-| 4 | 24     | 96                               |
-| 6 | 720    | 4320                             |
-| 8 | 40320  | 322560                           |
-| 10 | 3.6×10⁶ | 3.6×10⁷                          |
-
-El crecimiento factorial vuelve al algoritmo **inviable para n mayores a 10**, pues el tiempo de ejecución crece exponencialmente.
-
 ### Complejidad Espacial S(n)
 
 - Cada permutación se genera y procesa una a la vez por `itertools.permutations`, lo que evita almacenar todas las permutaciones en memoria.
@@ -50,7 +39,7 @@ El crecimiento factorial vuelve al algoritmo **inviable para n mayores a 10**, p
 Por tanto:
 
 $$
-\text{Complejidad espacial } = O(n)
+S(n) = O(n)
 $$
 
 ### Corrección del algoritmo
@@ -69,6 +58,8 @@ Por lo tanto, el algoritmo es **correcto y completo**, aunque **ineficiente para
 
 ## 2. Programación Dinámica
 
+---
+
 ## Complejidad Temporal T(n)
 
 - $S$ tiene una cantidad $2^n$  de subconjuntos posibles dado por las `mask` .
@@ -78,7 +69,7 @@ Por lo tanto, el algoritmo es **correcto y completo**, aunque **ineficiente para
 Teniendo esto en cuenta, la complejidad T(n) de la solución dinámica es de:
 
 $$
-T(n) = O(n*2^n)
+T(n) = O(n \cdot 2^n)
 $$
 
 ## Complejidad Espacial S(n)
@@ -91,8 +82,6 @@ Por lo tanto, la complejidad espacial S(n) es de:
 $$
 S(n) = O(2^n)
 $$
-
----
 
 # 3. Algoritmo Voraz
 
@@ -113,8 +102,6 @@ $$
 
 Esto significa que el algoritmo escala de manera eficiente, incluso para **instancias grandes**, manteniendo tiempos de ejecución muy bajos comparados con los métodos de fuerza bruta o programación dinámica.
 
----
-
 ## Complejidad Espacial S(n)
 
 - El algoritmo utiliza una **lista de índices** de tamaño *n* para representar el orden de riego.
@@ -129,38 +116,48 @@ $$
 
 Esto hace que el algoritmo voraz sea **muy eficiente en uso de memoria**, apropiado para resolver problemas de gran escala con recursos limitados.
 
----
-
 ## 4. Resumen comparativo
 
-| Estrategia            | Complejidad temporal | Complejidad espacial                   |
-| --------------------- | -------------------- | -------------------------------------- |
-| Fuerza bruta          | $\(O(n \cdot 2^n)\)$   | $\(O(n)\)$                               |
-| Programación dinámica | $\(O(n \cdot W)\) $    | $\(O(n \cdot W)\) ó \(O(W)\)$ optimizado |
-| Voraz                 | $\(O(n \log n)\) $    | $\(O(n)\)$                               |
+En la siguiente sección se presenta una comparación entre las tres estrategias implementadas para resolver el Problema de Riego Óptimo:
+
+- Fuerza Bruta (roFB)
+
+- Programación Dinámica (roPD)
+
+- Algoritmo Voraz (roV)
+
+---
+
+| Estrategia | Complejidad Temporal | Complejidad Espacial |
+| ---------------------- | -------------------- | -------------------- |
+| Fuerza Bruta | $O(n \cdot n!)$  | $O(n)$ |
+| Programación Dinámica  | $O(n \cdot 2^n)$ | $O(2^n)$ |
+| Voraz | $O(n \cdot log (n))$ | $O(n)$ |
 
 ---
 
 ### 4.1 Analisis mediante gráficas
 
-Comparacion teorica de complejidades en tiempo y espacio para las tres estrategias implementadas.
+La siguiente figura muestra el costo total obtenido por cada estrategia para un número creciente de tablones. Se hizo con valores pequeños debido a que el crecimiento exponcial no permite ver la diferencia entre las tres opciones.
 
-![Comparativa de tiempo](imagenes/g1.png)
+![Comparativa complejidad T](imagenes/complejidades.jpg)
 
-Analisis de DP con W con n fijo
+Se observa que el costo de fuerza bruta obtiene se dispara, mientras que el algoritmo voraz y la programación dinámica logran valores cercanos con un costo computacional mucho menor.
+A medida que el número de tablones crece, la diferencia en tiempo de ejecución se vuelve determinante.
 
-![Comparativa DP](imagenes/g2.png)
+![Comparativa complejidad FB](imagenes/FB.jpg)
 
-Recordar incluir la comparacion de tiempos con respecto a lo implementado. No se incluye en este ejemplo.
-
+La complejidad temporal de la fuerza bruta es factorial, $T(n)=O(n!⋅n)$, lo cual se refleja en el crecimiento abrupto del tiempo de ejecución. La complejidad espacial $S(n)=O(n)$ resulta lineal, ya que solo se almacenan estructuras proporcionales al número de tablones.
 
 Comparacion teorica de complejidades en caso practico y teorico de PD.
 
-|[Comparativa complejidad](imagenes/PD1.png)
+![Comparativa complejidad](imagenes/PD1.png)
 
----
+En la solución dinámica, el tiempo crece aproximadamente de forma exponencial $O(n^2 \cdot 2^n)$, aunque mucho más lento que el crecimiento factorial de la fuerza bruta. Se aprecia que la curva práctica se aproxima bastante a la teórica, evidenciando la consistencia del análisis de complejidad.
 
 ## 5. Conclusiones
+
+---
 
 ### Programación bruta:
 
