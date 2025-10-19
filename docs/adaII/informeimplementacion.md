@@ -210,6 +210,61 @@ Según el código implementado, al evaluar todos los subconjuntos posibles y rec
 
 ## c) Solución voraz
 
+El enfoque **voraz** busca construir una solución de forma **rápida y aproximada**, tomando decisiones locales que se espera conduzcan a un resultado cercano al óptimo.
+
+En este problema, el algoritmo selecciona el orden de riego según una **regla de prioridad**, sin explorar todas las permutaciones posibles como la fuerza bruta ni usar almacenamiento intermedio como la dinámica.
+
+### Idea principal
+
+Cada tablón $i$ se describe por:
+
+- $ts_i$ : tiempo máximo que puede sobrevivir sin riego,
+- $tr_i$: tiempo de regado,
+- $p_i$ : prioridad o importancia del tablón.
+
+El algoritmo considera que un tablón es **más urgente** si tiene una alta prioridad y un bajo tiempo de supervivencia.
+
+Por ello, se define la **razón voraz**:
+
+                                                                              $Ri = \frac{p_i}{ts_i}$
+
+El algoritmo ordena los tablones de forma descendente según esta razón, y luego calcula el costo total en ese orden.
+
+### Ejemplo de ejecución
+
+Para la finca  $F_1 = \langle (10,3,4), (5,3,3), (2,2,1), (8,1,1), (6,4,2) \rangle$ :
+
+1. Se calculan las razones $p_i/ts_i$:
+    - Tablón 0: 0.4
+    - Tablón 1: 0.6
+    - Tablón 2: 0.5
+    - Tablón 3: 0.125
+    - Tablón 4: 0.333
+2. Se ordenan de forma descendente: **(1, 2, 0, 4, 3)**
+3. Al calcular el costo según esta secuencia:
+    - Costo total obtenido por el algoritmo voraz: **20**
+    - Costo óptimo (fuerza bruta): **14**
+
+El resultado es cercano al óptimo, pero no exacto, demostrando la naturaleza aproximada del enfoque voraz.
+
+---
+
+### Complejidad
+
+- **Ordenamiento:**  $O(n \log n)$
+- **Cálculo del costo:**  $O(n)$
+- **Complejidad total:  $T(n) = O(n \log n)$**
+
+Este algoritmo es significativamente más rápido que la fuerza bruta $(O(n!))$ y más simple que la programación dinámica.
+
+---
+
+### Observaciones
+
+- El método voraz obtiene soluciones **óptimas en algunos casos simples** (por ejemplo, cuando la prioridad y supervivencia están equilibradas).
+- En casos más complejos, produce soluciones **cercanas al óptimo**, pero no exactas.
+- A cambio, ofrece una **excelente relación costo/tiempo**, siendo apropiado para problemas con grandes cantidades de tablones.
+
 # 5. Partes importantes del código
 
 ---
@@ -331,6 +386,41 @@ Usando el diccionario `parent`, el algoritmo reconstruye la **permutación ópti
 
 👉 Esta función genera todas las permutaciones con `itertools.permutations`, evalúa cada una con `compute_cost_for_permutation` y selecciona la mejor. Retorna la permutación óptima y su costo asociado, cumpliendo con el formato del enunciado.
 
+---
+
+## Función principal por programación voraz
+
+```python
+def roV(finca):
+    """
+    Algoritmo voraz propuesto.
+    Recibe `finca` (lista de tuplas (ts,tr,p)).
+    Devuelve (orden, costo).
+    """
+
+    n = len(finca)
+    # Orden voraz: mayor prioridad con menor supervivencia primero
+    orden = sorted(range(n), key=lambda i: finca[i][2] / finca[i][0], reverse=True)
+
+    tiempo_actual = 0
+    costo_total = 0
+    for i in orden:
+        ts, tr, p = finca[i]
+        fin = tiempo_actual + tr
+        penalizacion = p * max(0, fin - ts)
+        costo_total += penalizacion
+        tiempo_actual = fin
+
+    return orden, costo_total
+```
+
+Esta función implementa el **algoritmo voraz**, el cual ordena los tablones de acuerdo con una **razón de prioridad** dada por `(pᵢ / tsᵢ)`, donde los tablones con mayor prioridad y menor tiempo de supervivencia se riegan primero.
+De esta forma, se genera una **secuencia de riego aproximada** sin evaluar todas las permutaciones posibles.
+
+Durante la ejecución, se calcula el **costo total** acumulando penalizaciones por retraso mediante la expresión `p * max(0, fin - ts)`.
+El algoritmo devuelve el **orden obtenido** y su **costo asociado**, proporcionando una solución eficiente con complejidad **O(n log n)**, aunque no siempre óptima.
+
+
 # 6. Pipeline de compilación/ejecución
 
 ---
@@ -388,3 +478,12 @@ La solución **dinámica (roPD)**:
 - Evalúa cada permutación para encontrar la solución optima.
 - Garantiza una solución óptima.
 - Muestra una gran optimización en costo computacional y tiempo de ejecución respecto a la solución por fuerza bruta.
+
+La solución **voraz (roV)**:
+
+- Fue implementada en Python de forma sencilla, eficiente y modular.
+- Utiliza una **regla de prioridad** basada en la razón *(pᵢ / tsᵢ)* para determinar el orden de riego.
+- Permite obtener soluciones **rápidas y razonablemente buenas** sin evaluar todas las combinaciones posibles.
+- Su **complejidad O(n log n)** la hace adecuada para **instancias grandes**, donde la fuerza bruta o la dinámica serían demasiado costosas.
+- Aunque **no garantiza siempre la solución óptima**, mantiene una **buena relación entre calidad y tiempo de ejecución**.
+- Resulta útil como método aproximado en escenarios donde la **rapidez de respuesta** es más importante que la precisión absoluta.

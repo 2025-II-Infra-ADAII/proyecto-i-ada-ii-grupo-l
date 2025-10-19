@@ -94,41 +94,40 @@ $$
 
 ---
 
-## 3. Algoritmo voraz (greedy por razón valor/peso)
+# 3. Algoritmo Voraz
 
-### Complejidad temporal
+---
 
-El algoritmo voraz comienza calculando la razón valor/peso de cada objeto, lo que requiere:
-\[
-O(n)
-\]
+## Complejidad Temporal T(n)
 
-Luego, se ordenan los objetos según esta razón, lo cual domina el costo total, ya que el ordenamiento eficiente requiere:
-\[
-O(n \log n)
-\]
+- El algoritmo inicia calculando una **razón de prioridad** `(pᵢ / tsᵢ)` para cada tablón, operación que se realiza una sola vez por elemento, en tiempo **O(n)**.
+- Luego, utiliza la función `sorted()` de Python para **ordenar los tablones** según dicha razón.
+El algoritmo de ordenamiento más eficiente empleado por Python (Timsort) tiene una complejidad temporal de **O(n log n)**.
+- Finalmente, se realiza un recorrido lineal sobre todos los tablones para **calcular el costo total**, lo cual añade un costo adicional **O(n)**.
 
-Finalmente, se recorre la lista ordenada para llenar la mochila, con un costo lineal:
-\[
-O(n)
-\]
+Sumando todos los pasos, la complejidad temporal del algoritmo voraz es:
 
-Por tanto, la complejidad total es:
-\[
+$$
 T(n) = O(n \log n)
-\]
+$$
 
-Esto convierte al algoritmo voraz en el más eficiente en tiempo entre las tres aproximaciones. Sin embargo, a diferencia de la programación dinámica, no garantiza la solución óptima, ya que tomar siempre el objeto con mejor razón local no asegura la mejor combinación global.
+Esto significa que el algoritmo escala de manera eficiente, incluso para **instancias grandes**, manteniendo tiempos de ejecución muy bajos comparados con los métodos de fuerza bruta o programación dinámica.
 
-### Complejidad espacial
+---
 
-- Lista de objetos con razón valor/peso: \(O(n)\).
-- No se requiere matriz adicional.
+## Complejidad Espacial S(n)
 
-Así:
-\[
+- El algoritmo utiliza una **lista de índices** de tamaño *n* para representar el orden de riego.
+- No requiere estructuras adicionales de almacenamiento, ni matrices de estados o máscaras.
+- Las variables empleadas (`tiempo_actual`, `costo_total`, `orden`) ocupan **espacio constante** adicional.
+
+Por lo tanto, la complejidad espacial es lineal con respecto al número de tablones:
+
+$$
 S(n) = O(n)
-\]
+$$
+
+Esto hace que el algoritmo voraz sea **muy eficiente en uso de memoria**, apropiado para resolver problemas de gran escala con recursos limitados.
 
 ---
 
@@ -177,4 +176,8 @@ En el punto de vista del costo computacional un costo de $O(n*2^n)$ hace que par
 
 ### Programación voraz:
 
-- El **algoritmo voraz** es eficiente en tiempo y espacio, pero no garantiza la solución óptima.
+El enfoque voraz demostró ser **el más eficiente en tiempo de ejecución**, con una complejidad de $O(n \log n)$, lo que le permite manejar fácilmente instancias grandes del problema.
+
+Aunque no siempre garantiza la **solución óptima**, los resultados obtenidos fueron **cercanos al óptimo** en la mayoría de los casos, mostrando un **buen equilibrio entre precisión y eficiencia**.
+
+Su simplicidad y bajo costo computacional la convierten en una estrategia práctica para situaciones donde la rapidez es prioritaria sobre la exactitud total.
