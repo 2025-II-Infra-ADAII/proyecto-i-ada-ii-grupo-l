@@ -145,11 +145,11 @@ Esto hace que el algoritmo voraz sea **muy eficiente en uso de memoria**, apropi
 
 Comparacion teorica de complejidades en tiempo y espacio para las tres estrategias implementadas.
 
-![Comparativa de tiempo](imagenes/g1.png)
+![Comparativa de tiempo](imagenes/complejidad temporal.png)
 
 Analisis de DP con W con n fijo
 
-![Comparativa DP](imagenes/g2.png)
+![Comparativa DP](imagenes/complejidad espacial.png)
 
 Recordar incluir la comparacion de tiempos con respecto a lo implementado. No se incluye en este ejemplo.
 
