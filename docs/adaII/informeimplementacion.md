@@ -182,9 +182,7 @@ sea $F_1:$
 **Caso base:** $DP[∅, 0] = 0$ 
 
 Para cada subconjunto S y cada tablón j ∈ S:
-$$
-DP[S, t_{final}] = min(DP[S\{j, t_{anterior}] + p_j × max(0, (t_{anterior} + tr_j) - ts_j))
-$$
+$$DP[S, t_{final}] = min(DP[S\{j, t_{anterior}] + p_j × max(0, (t_{anterior} + tr_j) - ts_j))$$
 
 **Subconjuntos de tamaño 1:**
 
